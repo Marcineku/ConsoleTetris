@@ -6,12 +6,15 @@ void Tetris::setup()
 
 void Tetris::update(double deltaTime)
 {
-	window->drawLine(1, 1, window->getWidth() - 1, window->getHeight() - 1);
+	for (Tetromino tetromino : tetrominos)
+		tetromino.draw(window);
 }
 
 Tetris::Tetris(int consoleWidth, int consoleHeight, int fontWidth, int fontHeight)
 	: Engine(consoleWidth, consoleHeight, fontWidth, fontHeight)
 {
+	Tetromino tetromino(0, 0, TetrominoType::I);
+	tetrominos.push_back(tetromino);
 }
 
 Tetris::~Tetris()
