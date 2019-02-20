@@ -1,14 +1,17 @@
 #pragma once
 
 #include "ConsoleEngine.h"
-#include "Tetromino.h"
-
-#include <vector>
+#include "Board.h"
 
 class Tetris : public ConsoleEngine::Engine
 {
 private:
-	std::vector<Tetromino> tetrominos;
+	const double moveAfterTime = 0.12;
+
+	Board* board;
+
+	double moveLeftKeyDownTime;
+	double moveRightKeyDownTime;
 
 protected:
 	virtual void setup() override;
