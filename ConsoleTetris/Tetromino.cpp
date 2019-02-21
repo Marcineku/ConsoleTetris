@@ -35,32 +35,25 @@ const wchar_t* Tetromino::patterns[to_underlying(TetrominoType::SIZE)] = { L"..X
 																		   L".XX."
 																		   L"...." };
 
-inline void Tetromino::swap(wchar_t& a, wchar_t& b)
-{
-	wchar_t tmp = a;
-	a = b;
-	b = tmp;
-}
-
 inline void Tetromino::transpose(std::wstring& arr, unsigned int cols)
 {
 	for (unsigned int  col = 0; col < cols - 1; ++col)
 		for (unsigned int  row = col + 1; row < cols; ++row)
-			swap(arr[to_array_point(col, row, cols)], arr[to_array_point(row, col, cols)]);
+			std::swap(arr[to_array_point(col, row, cols)], arr[to_array_point(row, col, cols)]);
 }
 
 inline void Tetromino::reverseRows(std::wstring& arr, unsigned int cols)
 {
 	for (unsigned int  row = 0; row < cols; ++row)
 		for (unsigned int  col = 0; col < cols / 2; ++col)
-			swap(arr[to_array_point(row, col, cols)], arr[to_array_point(row, cols - col - 1, cols)]);
+			std::swap(arr[to_array_point(row, col, cols)], arr[to_array_point(row, cols - col - 1, cols)]);
 }
 
 inline void Tetromino::reverseCols(std::wstring& arr, unsigned int cols)
 {
 	for (unsigned int  col = 0; col < cols; ++col)
 		for (unsigned int  row = 0; row < cols / 2; ++row)
-			swap(arr[to_array_point(row, col, cols)], arr[to_array_point(cols - row - 1, col, cols)]);
+			std::swap(arr[to_array_point(row, col, cols)], arr[to_array_point(cols - row - 1, col, cols)]);
 }
 
 std::wstring Tetromino::getPattern(TetrominoType type, int rotation)
@@ -119,7 +112,6 @@ Tetromino::Tetromino(int x, int y, TetrominoType type, ConsoleEngine::Window* wi
 		fill = ConsoleEngine::TEXT_RED;
 		break;
 	}
-	color = ConsoleEngine::PIXEL_WHITE;
 
 	rotation = 0;
 }
@@ -152,6 +144,11 @@ void Tetromino::rotateCounterClockwise()
 void Tetromino::fall()
 {
 	position.y += 1;
+}
+
+void Tetromino::rise()
+{
+	position.y -= 1;
 }
 
 void Tetromino::moveLeft()
@@ -189,6 +186,6 @@ void Tetromino::draw()
 		{
 			int x = i % pattern_width;
 			int y = i / pattern_width;
-			window->drawPixel(x + position.x, y + position.y, color, ConsoleEngine::TYPE_FULL_BLOCK, fill);
+			window->drawPixel(x + position.x, y + position.y, color_accent, pixel_type, fill);
 		}
 }

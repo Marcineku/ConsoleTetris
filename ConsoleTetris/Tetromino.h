@@ -49,7 +49,6 @@ class Tetromino
 private:
 	static const wchar_t* patterns[to_underlying(TetrominoType::SIZE)];
 
-	static inline void swap(wchar_t& a, wchar_t& b);
 	static inline void transpose(std::wstring& arr, unsigned int cols);
 	static inline void reverseRows(std::wstring& arr, unsigned int cols);
 	static inline void reverseCols(std::wstring& arr, unsigned int cols);
@@ -60,12 +59,13 @@ private:
 
 	ConsoleEngine::Window* window;
 
-	ConsoleEngine::PIXEL_COLOR color;
 	ConsoleEngine::TEXT_COLOR fill;
 	int rotation;
 
 public:
 	static constexpr unsigned int pattern_width = 4;
+	static constexpr ConsoleEngine::PIXEL_COLOR color_accent = ConsoleEngine::PIXEL_WHITE;
+	static constexpr ConsoleEngine::PIXEL_TYPE pixel_type = ConsoleEngine::TYPE_FULL_BLOCK;
 
 	Tetromino(int x, int y, TetrominoType type, ConsoleEngine::Window* window);
 	Tetromino(int x, int y, ConsoleEngine::Window* window);
@@ -74,12 +74,14 @@ public:
 	void rotateClockwise();
 	void rotateCounterClockwise();
 	void fall();
+	void rise();
 	void moveLeft();
 	void moveRight();
 
 	std::wstring getPattern();
-	inline Vector2 getPosition() { return Vector2(position.x, position.y); }
 	std::vector<Vector2> getPoints();
+	inline Vector2 getPosition() { return Vector2(position.x, position.y); }
+	inline ConsoleEngine::TEXT_COLOR getFillColor() { return fill; }
 
 	void draw();
 };
