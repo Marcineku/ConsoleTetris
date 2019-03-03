@@ -5,7 +5,7 @@ auto Tetris::restart() -> void
 	score = 0;
 	board.clear();
 	state = State::InProgress;
-	paused = true;
+	paused = false;
 	fallAfterTime = 0.25;
 }
 
