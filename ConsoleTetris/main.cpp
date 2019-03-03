@@ -1,8 +1,8 @@
 #include "Tetris.h"
 
-int main(int argc, char* argv[])
+int main()
 {
-	Tetris tetris(120, 80);
+	Tetris tetris(80, 40, 16, 16);
 	tetris.start();
 
 	return 0;

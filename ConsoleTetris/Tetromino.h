@@ -1,87 +1,49 @@
 #pragma once
 
-#include "Window.h"
+#include "ConsoleEngine.h"
 
 #include <string>
 #include <vector>
 
-constexpr unsigned int to_array_point(int x, int y, int width)
-{
-	return x * width + y;
-}
-
-enum class TetrominoType
-{
-	I, J, L, O, S, T, Z, SIZE
-};
-constexpr int to_underlying(TetrominoType type)
-{
-	return static_cast<std::underlying_type_t<TetrominoType>>(type);
-}
-
-struct Vector2
-{
-	int x, y;
-
-	Vector2()
-	{
-		x = 0;
-		y = 0;
-	}
-	Vector2(int x, int y)
-	{
-		this->x = x;
-		this->y = y;
-	}
-
-	Vector2 operator+(const Vector2& v)
-	{
-		return Vector2(this->x + v.x, this->y + v.y);
-	}
-	Vector2 operator-(const Vector2& v)
-	{
-		return Vector2(this->x - v.x, this->y - v.y);
-	}
-};
-
 class Tetromino
 {
+public:
+	enum class Type { I, J, L, O, S, T, Z, Quantity };
+	static constexpr unsigned int     pattern_width = 4;
+	static constexpr ce::Pixel::Color pixel_color   = ce::Pixel::Color::White;
+	static constexpr ce::Text::Type   text_type     = ce::Text::Type::FullBlock;
+
 private:
-	static const wchar_t* patterns[to_underlying(TetrominoType::SIZE)];
+	static const wchar_t* patterns[ce::to_underlying(Type::Quantity)];
 
-	static inline void transpose(std::wstring& arr, unsigned int cols);
-	static inline void reverseRows(std::wstring& arr, unsigned int cols);
-	static inline void reverseCols(std::wstring& arr, unsigned int cols);
-	static std::wstring getPattern(TetrominoType type, int rotation);
+	static auto transpose(std::wstring& arr, const int cols)   -> void;
+	static auto reverseRows(std::wstring& arr, const int cols) -> void;
+	static auto reverseCols(std::wstring& arr, const int cols) -> void;
 
-	Vector2 position;
-	TetrominoType type;
+private:
+	ce::Vector2Int position;
+	Type type;
 
-	ConsoleEngine::Window* window;
-
-	ConsoleEngine::TEXT_COLOR fill;
+	ce::Text::Color fill;
 	int rotation;
 
 public:
-	static constexpr unsigned int pattern_width = 4;
-	static constexpr ConsoleEngine::PIXEL_COLOR color_accent = ConsoleEngine::PIXEL_WHITE;
-	static constexpr ConsoleEngine::PIXEL_TYPE pixel_type = ConsoleEngine::TYPE_FULL_BLOCK;
+	static auto getPattern(const Type type, const int rotation)->std::wstring;
 
-	Tetromino(int x, int y, TetrominoType type, ConsoleEngine::Window* window);
-	Tetromino(int x, int y, ConsoleEngine::Window* window);
-	~Tetromino();
+	Tetromino(const int x, const int y, const Type type);
+	Tetromino(const int x, const int y);
 
-	void rotateClockwise();
-	void rotateCounterClockwise();
-	void fall();
-	void rise();
-	void moveLeft();
-	void moveRight();
+	auto rotateClockwise()        -> void;
+	auto rotateCounterClockwise() -> void;
+	auto fall()                   -> void;
+	auto rise()                   -> void;
+	auto moveLeft()               -> void;
+	auto moveRight()              -> void;
 
-	std::wstring getPattern();
-	std::vector<Vector2> getPoints();
-	inline Vector2 getPosition() { return Vector2(position.x, position.y); }
-	inline ConsoleEngine::TEXT_COLOR getFillColor() { return fill; }
+	auto getPattern() const   -> std::wstring;
+	auto getPoints() const    -> std::vector<ce::Vector2Int>;
+	auto getPosition() const  -> ce::Vector2Int;
+	auto getFillColor() const -> ce::Text::Color;
 
-	void draw();
+	auto draw(ce::Engine& engine) const -> void;
 };

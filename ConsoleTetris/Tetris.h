@@ -3,16 +3,27 @@
 #include "ConsoleEngine.h"
 #include "Board.h"
 
-class Tetris : public ConsoleEngine::Engine
+class Tetris : public ce::Engine
 {
 private:
+	enum class State { InProgress, Over };
+	enum class Menu { Resume, Restart, Exit, Quantity };
+
+	static constexpr double move_after_time    = 0.12;
+	static constexpr int    board_width        = 16;
+	static constexpr int    board_height       = 30;
+	static constexpr auto   deleting_row_color = ce::Text::Color::LightGrey;
+
+	Board board;
+
+	State state;
+
 	bool paused;
+	Menu selectedMenuItem;
+
+	bool pausedByEvent;
 	double pauseTime;
 	double stopPauseAfterTime;
-
-	const double moveAfterTime = 0.12;
-
-	Board* board;
 
 	double moveLeftKeyDownTime;
 	double moveRightKeyDownTime;
@@ -21,13 +32,13 @@ private:
 	double fallAfterTime;
 	double fallTimer;
 
-	unsigned int points;
+	int score;
+
+	auto restart() -> void;
 
 protected:
-	virtual void setup() override;
-	virtual void update(double deltaTime) override;
+	virtual void update(const double deltaTime) override;
 
 public:
-	Tetris(int consoleWidth, int consoleHeight, int fontWidth = 8, int fontHeight = 8);
-	~Tetris();
+	Tetris(int consoleWidth, int consoleHeight, int fontWidth, int fontHeight);
 };

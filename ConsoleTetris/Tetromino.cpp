@@ -1,64 +1,76 @@
 #include "Tetromino.h"
 
-const wchar_t* Tetromino::patterns[to_underlying(TetrominoType::SIZE)] = { L"..X."
-																		   L"..X."
-																		   L"..X."
-																		   L"..X.",
-																		   
-																		   L"...."
-																		   L".XXX"
-																		   L"...X"
-																		   L"....",
-																		   
-																		   L"...."
-																		   L"XXX."
-																		   L"X..."
-																		   L"....",
-																		   
-																		   L"...."
-																		   L".XX."
-																		   L".XX."
-																		   L"....",
-																		   
-																		   L"...."
-																		   L"..XX"
-																		   L".XX."
-																		   L"....",
-																		   
-																		   L"...."
-																		   L".XXX"
-																		   L"..X."
-																		   L"....",
-																		   
-																		   L"...."
-																		   L"XX.."
-																		   L".XX."
-																		   L"...." };
+const wchar_t* Tetromino::patterns[ce::to_underlying(Type::Quantity)] = { L"..X."
+															     	      L"..X."
+															     	      L"..X."
+															     	      L"..X.",
+															     	      
+															     	      L"...."
+															     	      L".XXX"
+															     	      L"...X"
+															     	      L"....",
+															     	      
+															     	      L"...."
+															     	      L"XXX."
+															     	      L"X..."
+															     	      L"....",
+															     	      
+															     	      L"...."
+															     	      L".XX."
+															     	      L".XX."
+															     	      L"....",
+															     	      
+															     	      L"...."
+															     	      L"..XX"
+															     	      L".XX."
+															     	      L"....",
+															     	      
+															     	      L"...."
+															     	      L".XXX"
+															     	      L"..X."
+															     	      L"....",
+															     	      
+															     	      L"...."
+															     	      L"XX.."
+															     	      L".XX."
+															     	      L"...." };
 
-inline void Tetromino::transpose(std::wstring& arr, unsigned int cols)
+auto Tetromino::transpose(std::wstring& arr, const int cols) -> void
 {
-	for (unsigned int  col = 0; col < cols - 1; ++col)
-		for (unsigned int  row = col + 1; row < cols; ++row)
-			std::swap(arr[to_array_point(col, row, cols)], arr[to_array_point(row, col, cols)]);
+	for (int col = 0; col < cols - 1; ++col)
+	{
+		for (int row = col + 1; row < cols; ++row)
+		{
+			std::swap(arr[ce::to_array_point(col, row, cols)], arr[ce::to_array_point(row, col, cols)]);
+		}
+	}
 }
 
-inline void Tetromino::reverseRows(std::wstring& arr, unsigned int cols)
+auto Tetromino::reverseRows(std::wstring& arr, const int cols) -> void
 {
-	for (unsigned int  row = 0; row < cols; ++row)
-		for (unsigned int  col = 0; col < cols / 2; ++col)
-			std::swap(arr[to_array_point(row, col, cols)], arr[to_array_point(row, cols - col - 1, cols)]);
+	for (int row = 0; row < cols; ++row)
+	{
+		for (int col = 0; col < cols / 2; ++col)
+		{
+			std::swap(arr[ce::to_array_point(row, col, cols)], arr[ce::to_array_point(row, cols - col - 1, cols)]);
+		}
+	}
 }
 
-inline void Tetromino::reverseCols(std::wstring& arr, unsigned int cols)
+auto Tetromino::reverseCols(std::wstring& arr, const int cols) -> void
 {
-	for (unsigned int  col = 0; col < cols; ++col)
-		for (unsigned int  row = 0; row < cols / 2; ++row)
-			std::swap(arr[to_array_point(row, col, cols)], arr[to_array_point(cols - row - 1, col, cols)]);
+	for (int col = 0; col < cols; ++col)
+	{
+		for (int row = 0; row < cols / 2; ++row)
+		{
+			std::swap(arr[ce::to_array_point(row, col, cols)], arr[ce::to_array_point(cols - row - 1, col, cols)]);
+		}
+	}
 }
 
-std::wstring Tetromino::getPattern(TetrominoType type, int rotation)
+auto Tetromino::getPattern(const Type type, const int rotation) -> std::wstring
 {
-	std::wstring pattern(patterns[to_underlying(type)]);
+	std::wstring pattern(patterns[ce::to_underlying(type)]);
 
 	switch (rotation)
 	{
@@ -79,53 +91,43 @@ std::wstring Tetromino::getPattern(TetrominoType type, int rotation)
 	return pattern;
 }
 
-Tetromino::Tetromino(int x, int y, TetrominoType type, ConsoleEngine::Window* window)
+Tetromino::Tetromino(const int x, const int y, const Type type)
+	:
+	position(x, y),
+	type(type),
+	rotation(0)
 {
-	position.x = x;
-	position.y = y;
-
-	this->type = type;
-
-	this->window = window;
-
 	switch (type)
 	{
-	case TetrominoType::I:
-		fill = ConsoleEngine::TEXT_CYAN;
+	case Type::I:
+		fill = ce::Text::Color::Cyan;
 		break;
-	case TetrominoType::J:
-		fill = ConsoleEngine::TEXT_BLUE;
+	case Type::J:
+		fill = ce::Text::Color::Blue;
 		break;
-	case TetrominoType::L:
-		fill = ConsoleEngine::TEXT_ORANGE;
+	case Type::L:
+		fill = ce::Text::Color::Orange;
 		break;
-	case TetrominoType::O:
-		fill = ConsoleEngine::TEXT_YELLOW;
+	case Type::O:
+		fill = ce::Text::Color::Yellow;
 		break;
-	case TetrominoType::S:
-		fill = ConsoleEngine::TEXT_GREEN;
+	case Type::S:
+		fill = ce::Text::Color::Green;
 		break;
-	case TetrominoType::T:
-		fill = ConsoleEngine::TEXT_VIOLET;
+	case Type::T:
+		fill = ce::Text::Color::Violet;
 		break;
-	case TetrominoType::Z:
-		fill = ConsoleEngine::TEXT_RED;
+	case Type::Z:
+		fill = ce::Text::Color::Red;
 		break;
 	}
-
-	rotation = 0;
 }
 
-Tetromino::Tetromino(int x, int y, ConsoleEngine::Window * window)
-	: Tetromino(x, y, static_cast<TetrominoType>(rand() % to_underlying(TetrominoType::SIZE)), window)
-{
-}
+Tetromino::Tetromino(const int x, const int y)
+	: Tetromino(x, y, static_cast<Type>(std::rand() % ce::to_underlying(Type::Quantity)))
+{}
 
-Tetromino::~Tetromino()
-{
-}
-
-void Tetromino::rotateClockwise()
+auto Tetromino::rotateClockwise() -> void
 {
 	rotation += 90;
 
@@ -133,7 +135,7 @@ void Tetromino::rotateClockwise()
 		rotation = 0;
 }
 
-void Tetromino::rotateCounterClockwise()
+auto Tetromino::rotateCounterClockwise() -> void
 {
 	rotation -= 90;
 
@@ -141,51 +143,70 @@ void Tetromino::rotateCounterClockwise()
 		rotation = 270;
 }
 
-void Tetromino::fall()
+auto Tetromino::fall() -> void
 {
 	position.y += 1;
 }
 
-void Tetromino::rise()
+auto Tetromino::rise() -> void
 {
 	position.y -= 1;
 }
 
-void Tetromino::moveLeft()
+auto Tetromino::moveLeft() -> void
 {
 	position.x -= 1;
 }
 
-void Tetromino::moveRight()
+auto Tetromino::moveRight() -> void
 {
 	position.x += 1;
 }
 
-std::wstring Tetromino::getPattern()
+auto Tetromino::getPattern() const -> std::wstring
 {
 	return getPattern(type, rotation);
 }
 
-std::vector<Vector2> Tetromino::getPoints()
+auto Tetromino::getPoints() const -> std::vector<ce::Vector2Int>
 {
-	std::vector<Vector2> points;
+	std::vector<ce::Vector2Int> points;
 
 	for (int i = 0; i < pattern_width; ++i)
+	{
 		for (int j = 0; j < pattern_width; ++j)
-			if (getPattern()[to_array_point(j, i, pattern_width)] == L'X')
-				points.push_back(position + Vector2(i, j));
+		{
+			if (getPattern()[ce::to_array_point(i, j, pattern_width)] == L'X')
+			{
+				points.push_back(position + ce::Vector2Int(i, j));
+			}
+		}
+	}
 
 	return points;
 }
 
-void Tetromino::draw()
+auto Tetromino::getPosition() const -> ce::Vector2Int
 {
-	std::wstring pattern = getPattern(type, rotation);
+	return position;
+}
+
+auto Tetromino::getFillColor() const -> ce::Text::Color
+{
+	return fill;
+}
+
+auto Tetromino::draw(ce::Engine& engine) const -> void
+{
+	const std::wstring pattern = getPattern(type, rotation);
+
 	for (unsigned int i = 0; i < pattern.length(); ++i)
+	{
 		if (pattern[i] == L'X')
 		{
-			int x = i % pattern_width;
-			int y = i / pattern_width;
-			window->drawPixel(x + position.x, y + position.y, color_accent, pixel_type, fill);
+			const int x = i % pattern_width;
+			const int y = i / pattern_width;
+			engine.draw(x + position.x, y + position.y, pixel_color, text_type, fill);
 		}
+	}
 }
