@@ -172,9 +172,9 @@ auto Tetromino::getPoints() const -> std::vector<ce::Vector2Int>
 {
 	std::vector<ce::Vector2Int> points;
 
-	for (int i = 0; i < pattern_width; ++i)
+	for (size_t i = 0; i < pattern_width; ++i)
 	{
-		for (int j = 0; j < pattern_width; ++j)
+		for (size_t j = 0; j < pattern_width; ++j)
 		{
 			if (getPattern()[ce::to_array_point(i, j, pattern_width)] == L'X')
 			{
@@ -200,13 +200,12 @@ auto Tetromino::draw(ce::Engine& engine) const -> void
 {
 	const std::wstring pattern = getPattern(type, rotation);
 
-	for (unsigned int i = 0; i < pattern.length(); ++i)
+	for (size_t i = 0; i < pattern.length(); ++i)
 	{
 		if (pattern[i] == L'X')
 		{
-			const int x = i % pattern_width;
-			const int y = i / pattern_width;
-			engine.draw(x + position.x, y + position.y, pixel_color, text_type, fill);
+			const ce::Vector2Int v(i % pattern_width, i / pattern_width);
+			engine.draw(position + v, pixel_color, text_type, fill);
 		}
 	}
 }
