@@ -68,7 +68,7 @@ auto Tetris::update(const double deltaTime) -> void
 				mousePosition.y < boardPosition.y + 2 &&
 				mousePosition.y >= boardPosition.y - 1)
 			{
-				if (isKeyPressed(ce::Mouse::Button::Left))
+				if (isKeyPressed(ce::Mouse::Left))
 				{
 					paused = false;
 				}
@@ -78,7 +78,7 @@ auto Tetris::update(const double deltaTime) -> void
 			else if (mousePosition.y < boardPosition.y + 6 &&
 				     mousePosition.y >= boardPosition.y + 3)
 			{
-				if (isKeyPressed(ce::Mouse::Button::Left))
+				if (isKeyPressed(ce::Mouse::Left))
 				{
 					restart();
 				}
@@ -88,7 +88,7 @@ auto Tetris::update(const double deltaTime) -> void
 			else if (mousePosition.y < boardPosition.y + 10 &&
 				     mousePosition.y >= boardPosition.y + 7)
 			{
-				if (isKeyPressed(ce::Mouse::Button::Left))
+				if (isKeyPressed(ce::Mouse::Left))
 				{
 					close();
 				}
