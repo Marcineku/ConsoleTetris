@@ -6,7 +6,7 @@ auto Tetris::restart() -> void
 	board.clear();
 	state = State::InProgress;
 	paused = false;
-	fallAfterTime = 0.25;
+	fallTimer.setTime(0.25);
 }
 
 auto Tetris::update(const double deltaTime) -> void
@@ -156,12 +156,11 @@ auto Tetris::update(const double deltaTime) -> void
 	{
 		if (pausedByEvent)
 		{
-			pauseTime += deltaTime;
+			pauseTimer.update(deltaTime);
 
-			if (pauseTime >= stopPauseAfterTime)
+			if (pauseTimer.hasFinished())
 			{
 				pausedByEvent = false;
-				pauseTime = 0.0;
 				std::vector<int> rowsCompleted = board.getRowsCompleted();
 				board.deleteRows(rowsCompleted);
 				score += rowsCompleted.size() * rowsCompleted.size() * 100;
@@ -171,26 +170,32 @@ auto Tetris::update(const double deltaTime) -> void
 		{
 			// Updating move timers
 			if (isKeyHeld(ce::Key::Left) || isKeyHeld(ce::Key::A))
-				moveLeftKeyDownTime += deltaTime;
+			{
+				moveLeftTimer.update(deltaTime);
+			}
 			else if (isKeyHeld(ce::Key::Right) || isKeyHeld(ce::Key::D))
-				moveRightKeyDownTime += deltaTime;
+			{
+				moveRightTimer.update(deltaTime);
+			}
 
 			// Update fall faster timer
 			if (isKeyHeld(ce::Key::Down) || isKeyHeld(ce::Key::S))
-				fallFasterKeyDownTime += deltaTime;
+			{
+				fallFasterTimer.update(deltaTime);
+			}
 
 			// Updating fall timer
-			fallTimer += deltaTime;
+			fallTimer.update(deltaTime);
 
 			// Spawing falling tetromino if there is no falling tetromino
 			if (!board.isFallingTetrominoSpawned())
 			{
 				if (board.spawnFallingTetromino())
 				{
-					fallAfterTime -= 0.001;
-					if (fallAfterTime <= 0.0)
+					fallTimer.setTime(fallTimer.getTime() - 0.001);
+					if (fallTimer.getTime() < 0)
 					{
-						fallAfterTime = 0.0;
+						fallTimer.setTime(0.0);
 					}
 				}
 				else
@@ -202,48 +207,56 @@ auto Tetris::update(const double deltaTime) -> void
 
 			// Rotating falling tetromino immediately after key press
 			if (isKeyPressed(ce::Key::Up) || isKeyPressed(ce::Key::W))
+			{
 				board.rotateFallingTetromino();
+			}
 
 			// Moving falling tetromino immediately after key press
 			if (isKeyPressed(ce::Key::Left) || isKeyPressed(ce::Key::A))
+			{
 				board.moveLeftFallingTetromino();
+			}
 			else if (isKeyPressed(ce::Key::Right) || isKeyPressed(ce::Key::D))
+			{
 				board.moveRightFallingTetromino();
+			}
 
 			// Falling tetromino falls faster immediately after key press
 			if (isKeyPressed(ce::Key::Down) || isKeyPressed(ce::Key::S))
+			{
 				board.fallFallingTetromino();
+			}
 
 			// Resetting move timer
 			if (isKeyReleased(ce::Key::Left) || isKeyReleased(ce::Key::A))
-				moveLeftKeyDownTime = 0.0;
+			{
+				moveLeftTimer.reset();
+			}
 			else if (isKeyReleased(ce::Key::Right) || isKeyReleased(ce::Key::D))
-				moveRightKeyDownTime = 0.0;
+			{
+				moveRightTimer.reset();
+			}
 
 			// Moving falling tetromino after holding move key for ${moveAfterTime} seconds
-			if (moveLeftKeyDownTime >= move_after_time)
+			if (moveLeftTimer.hasFinished())
 			{
-				moveLeftKeyDownTime = 0.0;
 				board.moveLeftFallingTetromino();
 			}
-			else if (moveRightKeyDownTime >= move_after_time)
+			else if (moveRightTimer.hasFinished())
 			{
-				moveRightKeyDownTime = 0.0;
 				board.moveRightFallingTetromino();
 			}
 
 			// Falling tetromino falls faster after holding falling faster key for move_after_time seconds
-			if (fallFasterKeyDownTime >= move_after_time)
+			if (fallFasterTimer.hasFinished())
 			{
-				fallFasterKeyDownTime = 0.0;
 				board.fallFallingTetromino();
 				score += 1;
 			}
 
 			// Make falling tetromino fall
-			if (fallTimer >= fallAfterTime)
+			if (fallTimer.hasFinished())
 			{
-				fallTimer = 0.0;
 				board.fallFallingTetromino();
 			}
 
@@ -251,7 +264,7 @@ auto Tetris::update(const double deltaTime) -> void
 			if (rowsCompleted.size() > 0)
 			{
 				pausedByEvent = true;
-				pauseTime = 0.0;
+				pauseTimer.reset();
 				board.changeRowsColor(rowsCompleted, deleting_row_color);
 			}
 		}
@@ -270,13 +283,11 @@ Tetris::Tetris(int consoleWidth, int consoleHeight, int fontWidth, int fontHeigh
 	paused(true),
 	selectedMenuItem(Menu::Resume),
 	pausedByEvent(false),
-	pauseTime(0.0),
-	stopPauseAfterTime(0.5),
-	moveLeftKeyDownTime(0.0),
-	moveRightKeyDownTime(0.0),
-	fallFasterKeyDownTime(0.0),
-	fallAfterTime(0.25),
-	fallTimer(0.0),
+	fallTimer(0.25),
+	pauseTimer(0.5),
+	moveLeftTimer(move_after_time),
+	moveRightTimer(move_after_time),
+	fallFasterTimer(0.1),
 	score(0)
 {
 	srand(static_cast<unsigned int>(time(nullptr)));

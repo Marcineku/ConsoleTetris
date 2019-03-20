@@ -22,15 +22,12 @@ private:
 	Menu selectedMenuItem;
 
 	bool pausedByEvent;
-	double pauseTime;
-	double stopPauseAfterTime;
 
-	double moveLeftKeyDownTime;
-	double moveRightKeyDownTime;
-	double fallFasterKeyDownTime;
-
-	double fallAfterTime;
-	double fallTimer;
+	ce::Timer fallTimer;
+	ce::Timer pauseTimer;
+	ce::Timer moveLeftTimer;
+	ce::Timer moveRightTimer;
+	ce::Timer fallFasterTimer;
 
 	int score;
 
