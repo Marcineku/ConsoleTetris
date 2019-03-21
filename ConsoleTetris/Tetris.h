@@ -9,14 +9,6 @@ private:
 	enum class State { InProgress, Over };
 	enum class Menu { Resume, Restart, Exit, Quantity };
 
-	struct Button
-	{
-		Menu type;
-		ce::RectInt rect;
-
-		Button(const Menu type, const ce::RectInt& rect);
-	};
-
 	static constexpr double move_after_time    = 0.12;
 	static constexpr int    board_width        = 16;
 	static constexpr int    board_height       = 30;
@@ -28,10 +20,6 @@ private:
 
 	bool paused;
 	Menu selectedMenuItem;
-
-	Button resumeButton;
-	Button restartButton;
-	Button exitButton;
 
 	bool pausedByEvent;
 

@@ -1,11 +1,5 @@
 #include "Tetris.h"
 
-Tetris::Button::Button(const Menu type, const ce::RectInt& rect)
-{
-	this->type = type;
-	this->rect = rect;
-}
-
 auto Tetris::restart() -> void
 {
 	score = 0;
@@ -281,9 +275,6 @@ Tetris::Tetris(int consoleWidth, int consoleHeight, int fontWidth, int fontHeigh
 	state(State::InProgress),
 	paused(true),
 	selectedMenuItem(Menu::Resume),
-	resumeButton (Menu::Resume , ce::RectInt()),
-	restartButton(Menu::Restart, ce::RectInt()),
-	exitButton   (Menu::Exit   , ce::RectInt()),
 	pausedByEvent(false),
 	fallTimer (0.25),
 	pauseTimer(0.5),
