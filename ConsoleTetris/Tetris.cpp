@@ -1,5 +1,11 @@
 #include "Tetris.h"
 
+Tetris::Button::Button(const Menu type, const ce::RectInt& rect)
+{
+	this->type = type;
+	this->rect = rect;
+}
+
 auto Tetris::restart() -> void
 {
 	score = 0;
@@ -15,14 +21,7 @@ auto Tetris::update(const double deltaTime) -> void
 	{
 		paused = !paused;
 
-		if (state == State::Over)
-		{
-			selectedMenuItem = Menu::Restart;
-		}
-		else
-		{
-			selectedMenuItem = Menu::Resume;
-		}
+		selectedMenuItem = state == State::Over ? Menu::Restart : Menu::Resume;
 	}
 
 	if (paused || state == State::Over)
@@ -282,10 +281,13 @@ Tetris::Tetris(int consoleWidth, int consoleHeight, int fontWidth, int fontHeigh
 	state(State::InProgress),
 	paused(true),
 	selectedMenuItem(Menu::Resume),
+	resumeButton (Menu::Resume , ce::RectInt()),
+	restartButton(Menu::Restart, ce::RectInt()),
+	exitButton   (Menu::Exit   , ce::RectInt()),
 	pausedByEvent(false),
-	fallTimer(0.25),
+	fallTimer (0.25),
 	pauseTimer(0.5),
-	moveLeftTimer(move_after_time),
+	moveLeftTimer (move_after_time),
 	moveRightTimer(move_after_time),
 	fallFasterTimer(0.1),
 	score(0)
