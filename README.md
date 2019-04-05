@@ -1,6 +1,6 @@
 # Console Tetris
 
-
+![alt text](https://raw.githubusercontent.com/Marcineku/ConsoleTetris/master/Preview.png)
 
 # Description
 Classic tetris game. Made using ConsoleEngine: https://github.com/Marcineku/ConsoleEngine
